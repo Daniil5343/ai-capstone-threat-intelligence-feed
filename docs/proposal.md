@@ -16,7 +16,9 @@ Security analysts at mid to large organizations who handle 200+ alerts daily and
 
 ## Architecture
 
-![Architecture Diagram](docs/architecture.png)
+![Architecture Diagram](https://github.com/Daniil5343/ai-capstone-threat-intelligence-feed/blob/aa961938aad30891d5d1d5ae425f1900614d3f4a/docs/architecture.png)
+
+
 
 ## Component Breakdown
 
@@ -29,8 +31,8 @@ Security analysts at mid to large organizations who handle 200+ alerts daily and
 
 ### Component 2: AI Summarizer & IOC Extractor (Allison)
 - **Description:** Summarize threats and Examine Indicators or compromise
-- **Tools:**n8n, HF API, Flowise & Airtable
-- **Input:**Data is JSON, CSVwhich goes through the Feed Collector, is processed by Flowise, and stored in Airtable 
+- **Tools:** n8n, HF API, Flowise & Airtable
+- **Input:** Data is JSON, CSVwhich goes through the Feed Collector, is processed by Flowise, and stored in Airtable 
 - **Output:** Summary and structured IOC indicators 
 - **Standalone demo:** Using the Flowise chain connected to Hugging face, each threat entry is summarized and extracted IOCs are structured on Airtable to have an easy to view table.
 
