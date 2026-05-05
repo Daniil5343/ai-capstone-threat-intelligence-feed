@@ -28,7 +28,7 @@ Security analysts at mid to large organizations who handle 200+ alerts daily and
 - **Standalone demo:** [The AI will perform a search and return relevant data re-formatted to JSON]
 
 ### Component 2: AI Summarizer & IOC Extractor (Allison)
-- **Description: Summarize threats and Examine Indicators or compromise
+- **Description:** Summarize threats and Examine Indicators or compromise
 - **Tools:**n8n, HF API, Flowise & Airtable
 - **Input:**Data is JSON, CSVwhich goes through the Feed Collector, is processed by Flowise, and stored in Airtable 
 - **Output:** Summary and structured IOC indicators 
@@ -41,7 +41,7 @@ Security analysts at mid to large organizations who handle 200+ alerts daily and
 - **Output:** tech stack & Groq analysis
 - **Standalone demo:** Sample data -> receive tech stack & Groq analysis
 
-***### Component 4: Integration, Testing & Presentation (All Group Members) 
+### Component 4: Integration, Testing & Presentation (All Group Members) 
 - **Description:** Combining components & presenting them working together 
 - **Tools:** 2 Airtables, n8n, GitHub & draw.io
 - **Input:** data from feed collector
@@ -58,6 +58,7 @@ Security analysts at mid to large organizations who handle 200+ alerts daily and
 ## AI Capabilities 
 
 |      Capability     |           Purpose          |                                    Model/API                                   |
+|---------------------|----------------------------|--------------------------------------------------------------------------------|
 | Text Classification | Detect suspicious language | https://huggingface.co/cybersectony/phishing-email-detection-distilbert_v2.4.1 |
 | Text Classification |     Enriches the threat    |      https://huggingface.co/mrm8488/bert-tiny-finetuned-sms-spam-detection     |
 
