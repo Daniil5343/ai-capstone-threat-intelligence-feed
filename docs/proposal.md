@@ -4,9 +4,9 @@
 
 |    Name   |  Role/Component  | GitHub Username |
 |-----------|------------------|-----------------|
-|  [Shiva]  |  [Orchestration] |  @[Shiva-Ram20] |
-| [Allison] |   [AI Analysis]  | @[10AllisonF22] |
-|  [Daniel] | [Data Ingestion] |   @[Danil5343]  |
+|   Shiva   |   Orchestration  |   @Shiva-Ram20  |
+|  Allison  |    AI Analysis   |  @10AllisonF22  |
+|   Daniel  |  Data Ingestion  |    @Danil5343   |
 
 ## Problem Statement
 This project uses AI to analyze cybersecurity threats, extract indicators of compromise (IOCs), and evaluate their relevance. This information is all presented through a unified dashboard. Cyber threats are constantly evolving. New methods of exploiting software vulnerabilities emerge daily, making it increasingly difficult to stay ahead using traditional approaches alone. Through integrating AI, this system enables faster identification and prioritization of relevant threats. The most common defense method against these cyber threats is anti-virus software and backups. This project aims to enhance threat intelligence by providing deeper insight and context, and clear, actionable insights in real time.
