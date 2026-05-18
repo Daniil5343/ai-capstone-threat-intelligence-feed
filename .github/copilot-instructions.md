@@ -23,24 +23,26 @@
 - GitHub (repo, documentation, portfolio)
 
 ## Airtable Schema
-[have to edit]
+[have to adjust the field names]
 ### [Table 1 Name, e.g., "Emails"]
 | Field | Type | Written By | Notes |
 |-------|------|-----------|-------|
-| record_id | Autonumber | Auto | Primary key |
-| created_at | Date+time | Auto | When record was added |
-| status | Single Select | All | Values: unprocessed, analyzing, analyzed, error |
-| source | Single Line | Ingestion | manual, webhook, scheduled |
-| [field_name] | [type] | [component] | [notes] |
-| [field_name] | [type] | [component] | [notes] |
+| Company_Name | Long Text | Feed Collector | Where the threat was received |
+| Tech_Stack | Long Text | AI Summarizer & IOC Extractor | technologies affected by the threat |
+| Threat_Summary | Long Text | AI Summarizer & IOC Extractor | Values: unprocessed, analyzing, analyzed, error |
+| Affected_Softwares |Long Text | AI Summarizer & IOC Extractor | softwares the threat targeted |
+| Attack_Type | Long Text | AI Summarizer & IOC Extractor | Description of the attack |
+| Severity | Long Text | Relevance Scorer | Values: High & Low |
+| remediation_action | Long Text | AI Summarizer & IOC Extractor | Recommended Action |
+| relevance_score | Number | Relevance Scorer | Values: 1.0 to 10.0 |
+| Date | Date | Auto | Updates as the threat is proccessed |
 | ... | ... | ... | ... |
 
 ## Conventions
 [have to edit]
-- Field names: snake_case (no spaces, no capitals)
+- Field names: Snake_Case (no spaces instead underscores, capitals)
 - Status values: lowercase, consistent across tables
-- Date fields end in _at (created_at, analyzed_at)
-- Boolean fields use is_ prefix (is_flagged, is_reviewed)
+- Date fields: date  time
 
 ## Current State
 - **What's working:** Groq classification
