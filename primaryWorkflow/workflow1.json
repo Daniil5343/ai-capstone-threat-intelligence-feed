@@ -1,0 +1,719 @@
+{
+  "name": "Capstone: Threat Feed | Orig",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "no_cache": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "e6ed19a4-856b-46b9-a8b0-a74ede27dca2",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "VtgMz8X1ThfEmrLm",
+          "name": "SerpAPI account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -416,
+        176
+      ],
+      "id": "b9775330-a692-4bb0-8573-3a21ff482b29",
+      "name": "Schedule Trigger",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the stringified JSON inside the output key\nconst cleanOutput = JSON.parse($json.output);\n\n// Return the parsed values so n8n recognizes them as separate fields\nreturn [{\n  json: {\n    companyName: cleanOutput.companyName,\n    threatSummary: cleanOutput.threatSummary,\n    techStack: cleanOutput.techStack,\n    affected_software: cleanOutput.affected_software,\n    attack_type: cleanOutput.attack_type,\n    severity: cleanOutput.severity,\n    dateFound: cleanOutput.dateFound,\n    \n    // REMOVE FIXED DEFAULTS TO FORCE DYNAMIC VALUES:\n    relevance_score: cleanOutput.relevance_score, \n    remediation_action: cleanOutput.remediation_action\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        176
+      ],
+      "id": "97f067a9-091a-4509-a021-138138abed6d",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "017a0163-ec6e-4c79-bb55-822adfd041b1",
+              "leftValue": "={{ $('Code').item.json.companyName.length % 2 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        176
+      ],
+      "id": "7537c9b5-729b-4685-b34f-c58e945e8e76",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        96
+      ],
+      "id": "cdeeadb4-c1d4-40e6-bc34-21a470480c81",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        240
+      ],
+      "id": "f431f80b-2bef-45a8-af85-1bc45044acbd",
+      "name": "Date & Time1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- CONFIGURATION POOLS FOR MAXIMUM VARIETY ---\nconst cybersecurityPrefixes = ['NetSec', 'Aegis', 'CoreShield', 'Sentinel', 'Nexus', 'Vertex', 'Horizon', 'Synapse', 'Citadel', 'Bastion', 'Fortress', 'Apex', 'Vanguard', 'Vector', 'Matrix', 'Pinnacle', 'Catalyst', 'OmniSec'];\nconst technicalSuffixes = ['Systems', 'Labs', 'Networks', 'Tech', 'Solutions', 'Dynamics', 'Cyber', 'Intelligence', 'Security', 'Global', 'Platforms', 'Engineering'];\n\n// Targeted corporate infrastructure tech stacks\nconst techStacks = [\n  'JavaScript, Node.js, Electron',\n  'PostgreSQL, Redis, Docker containers',\n  'Apache HTTP Server, Ubuntu Linux, OpenSSL',\n  'Kubernetes clusters, Terraform infrastructure, AWS IAM',\n  'Nginx web servers, Python applications, GitHub Actions CI/CD',\n  'Active Directory, Windows Server 2022, IIS',\n  'MongoDB databases, Express.js apps, React frameworks',\n  'Cisco IOS XE routers, BGP routing infrastructure, Fortinet firewalls'\n];\n\n// ====================================================================\n// PART 1 & 3: CRITICAL CONCEPTS (Triggers High & Medium Severities)\n// ====================================================================\nconst criticalConcepts = [\n  // --- HIGH SEVERITY LOGIC (Zero-Days, RCEs, Critical Infra Breaches) ---\n  'Remote Code Execution CVE patch advisory',\n  'Zero-day local privilege escalation exploit',\n  'Supply chain backdoor dependency vulnerability',\n  'Unauthenticated authentication bypass vulnerability',\n  'Critical Remote Command Injection disclosure',\n  'Ransomware threat actor initial access vector',\n  'Active directory domain escalation exploit',\n  'Desynchronization HTTP request smuggling CVE',\n  \n  // --- MEDIUM SEVERITY LOGIC (Requires Auth, Local Access, or User Interaction) ---\n  'Stored Cross-Site Scripting XSS proof of concept',\n  'SQL Injection vulnerability authenticated bypass',\n  'Insecure Direct Object Reference IDOR data leak',\n  'Server-Side Request Forgery SSRF internal pivot',\n  'Privileged Path Traversal arbitrary file read',\n  'Broken Object Level Authorization BOLA exposure',\n  'Cross-Site Request Forgery CSRF token bypass',\n  'Information disclosure sensitive metadata leakage'\n];\n\n// ====================================================================\n// PART 2: INFORMATIONAL CONCEPTS (Triggers Low/None Severities)\n// ====================================================================\nconst informationalConcepts = [\n  'Minor patch update release notes engineering',\n  'Security advisory hardening guidance checklist',\n  'Stable version changelog software optimization',\n  'Non-critical regulatory compliance policy update',\n  'Deprecation notice legacy module migration guide',\n  'Routine maintenance window infrastructure stability',\n  'Performance benchmarking telemetry adjustment log',\n  'Vendor software package structural refactoring note',\n  'TLS cipher suite configuration hardening best practice',\n  'Open-source package minor bugfix release'\n];\n// --- SELECTION ENGINE ---\nfunction getRandomItem(array) {\n  return array[Math.floor(Math.random() * array.length)];\n}\n\n// Generate an authentic corporate tech identity\nconst generatedCompany = `${getRandomItem(cybersecurityPrefixes)} ${getRandomItem(technicalSuffixes)}`;\nconst assignedStack = getRandomItem(techStacks);\n\n// Pre-compile advanced search strings to maximize SerpAPI search efficiency\nconst targetCriticalConcept = getRandomItem(criticalConcepts);\nconst targetInformationalConcept = getRandomItem(informationalConcepts);\n\n// Output matching property values cleanly down the canvas stream\nreturn [{\n  json: {\n    companyName: generatedCompany,\n    techStack: assignedStack,\n    criticalSearchQuery: `critical vulnerability \"${targetCriticalConcept}\" ${assignedStack.split(',')[0]}`,\n    informationalSearchQuery: `software update \"${targetInformationalConcept}\" ${assignedStack.split(',')[0]}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        176
+      ],
+      "id": "aa22372e-bcac-427d-9309-7b8979681194",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {
+          "no_cache": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        256,
+        400
+      ],
+      "id": "44400b34-83ff-4307-aa94-39c6d7754324",
+      "name": "SerpAPI1",
+      "credentials": {
+        "serpApi": {
+          "id": "VtgMz8X1ThfEmrLm",
+          "name": "SerpAPI account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Instructions:\n1. Call your tool EXACTLY 2 TIME(S). Do not try to call upon any tool which as the word \"open\" in it, you DO NOT have nor need it.\n\n  A1. Use the tool to dynamically search for recent security vulnerabilities, zero-days, or active exploits specifically targeting components of this technology stack: {{ $('Code').item.json.techStack }}. from free threat intelligence sources (RSS feeds from security blogs, CVE databases, public threat feeds) ensure that this is technical information; such as deep exploits and PRIMARILY IOCS(Indicators of Compromise).\n\n2. Cross-reference the search results against this target client profile:\n   - Target Enterprise: {{ $('Code').item.json.companyName }}\n   - Active Infrastructure Stack: {{ $('Code').item.json.techStack }}\n\n3. Identify the most critical vulnerability affecting a piece of software within that infrastructure stack. You MUST strictly categorize its severity as \"High\" or \"Medium\", Classify as medium if the identified threat is not immediately harmful to our present techstack. Identify a vulnerability affecting a piece of software within that infrastructure stack. You MUST categorize its severity strictly based on these rules:\n   - \"High\": If the threat is a zero-day, remote code execution (RCE), or unauthenticated supply-chain breach affecting the core techStack.\n   - \"Medium\": If the threat requires local access, authenticated privileges, user interaction (like XSS), or targets secondary/non-core tools in the stack.\n  \"severity\": \"High/Medium\",\n  \"relevance_score\": [Insert an integer from 6 to 10. Force a 9-10 for High severity; force a 6-8 for Medium severity]\n\n4. Synthesize your final assessment into a single clean JSON object. \n\nOutput Formatting Rules:\nCRITICAL: You must output your analysis strictly as a single, clean JSON object. Do not include any conversational filler, introductory text, or markdown code blocks (do not wrap your response in ```json). Match this structure exactly:\n{\n  \"companyName\": \"{{ $('Code').item.json.companyName }}\",\n  \"techStack\": \"{{ $('Code').item.json.techStack }}\",\n  \"threatSummary\": \"Write a 1-paragraph highly technical summary detailing how this specific threat actively risks the targeted infrastructure stack.\",\n  \"affected_software\": \"Name of the vulnerable software component\",\n  \"attack_type\": \"The specific categorization of the attack vector\",\n  \"severity\": \"High/Medium\",\n\"relevance_score\": [Insert an integer from 6 to 10. Choose 9-10 if it is an active Remote Code Execution or Supply Chain breach directly in the techStack component; choose 7-8 if it is a major exploit but has standard mitigations],\n  \"remediation_action\": \"write a specific 1 sentence engineer instruction which could provide a good solution e.g: 'Upgrade MongoDB to version 6.0.9 immediately and disable server-side JavaScript expression evaluation.\"\n  \"dateFound\": \"{{ $json.currentDate }}\"\n}",
+        "options": {
+          "systemMessage": "You are an expert cybersecurity threat intelligence analyst. Your job is to analyze real-world web search results and assess their risk against a specific targeted organization profile provided to you. \n\nCRITICAL: You must output your analysis strictly as a single, raw JSON object. Do not include any conversational filler, introductory text, or markdown code blocks (do not wrap your response in ```json). Match this structure exactly:\n{\n  \"companyName\": \"Name of the target company provided to you\",\n  \"techStack\": \"The tech stack provided to you\",\n  \"threatSummary\": \"A 1-paragraph technical summary detailing how this specific threat actively compromises the targeted infrastructure stack.\",\n  \"affected_software\": \"Name of the vulnerable software component\",\n  \"attack_type\": \"The specific categorization of the attack vector\",\n  \"severity\": \"High/Medium\",\n  \"dateFound\": \"The ISO timestamp string provided to you\"\n\"relevance_score\": [Insert an integer from 6 to 10. Choose 9-10 if it is an active Remote Code Execution or Supply Chain breach directly in the techStack component; choose 7-8 if it is a major exploit but has standard mitigations],\n  \"remediation_action\": \"write a specific 1 sentence engineer instruction which could provide a good solution e.g: 'Upgrade MongoDB to version 6.0.9 immediately and disable server-side JavaScript expression evaluation.\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        112,
+        96
+      ],
+      "id": "a7ecd0d2-4ccc-44e3-b775-6d1a152008f1",
+      "name": "Search-Agent1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Instructions:\n1. Call your tool EXACTLY 2 TIME(S). Do not try to call upon any tool which as the word \"open\" in it, you dont have nor need it.\n\n  A1. Use the tool to dynamically search for recent security vulnerabilities, zero-days, or active exploits specifically targeting components of this technology stack: {{ $('Code').item.json.techStack }}. from free threat intelligence sources such as:\n[RSS feeds from security blogs, CVE databases, public threat feeds) ensure that this is technical information; such as deep exploits and PRIMARILY IOCS(Indicators of Compromise).\n\n2. Cross-reference the search results against this target client profile:\n   - Active Infrastructure Stack: {{ $('Code').item.json.techStack }}\n\n3. Document a minor software update, patch, or release announcement from the results. Because it represents a non-urgent patch or standard update, you MUST explicitly categorize its severity strictly as \"Low\" or \"None\" if the technologies affected are not in the stack.\n4. Synthesize your final assessment into a single clean JSON object.\n\nOutput Formatting Rules:\nCRITICAL: You must output your analysis strictly as a single, clean JSON object. Do not include any conversational filler, introductory text, or markdown code blocks (do not wrap your response in ```json). Match this structure exactly:\n{\n  \"companyName\": \"{{ $('Code').item.json.companyName }}\",\n  \"techStack\": \"{{ $('Code').item.json.techStack }}\",\n  \"threatSummary\": \"Write a 1-paragraph technical summary of the found software update or patch note and how it relates to our active stack.\",\n  \"affected_software\": \"None affected or insignificant software component\",\n  \"attack_type\": \"General Information / Patch Announcement\",\n  \"severity\": \"Low/None\",\n  \"dateFound\": \"{{ $json.currentDate }}\"\n\"remediation_action\": \"Write a specific 1-sentence maintenance instruction, e.g., 'Schedule a standard maintenance window to apply point-release 7.0.6 during off-peak hours.'\n}",
+        "options": {
+          "systemMessage": "You are an IT systems intelligence assistant. Your job is to analyze web search results to identify software updates, minor release announcements, or non-critical security patches relevant to an organization profile provided to you.\n\nCRITICAL: You must output your analysis strictly as a single, raw JSON object. Do not include any conversational filler, introductory text, or markdown code blocks (do not wrap your response in ```json). Match this structure exactly:\n{\n  \"companyName\": \"Name of the target business provided to you\",\n  \"techStack\": \"The tech stack provided to you\",\n  \"threatSummary\": \"A 1-paragraph highly technical summary summarizing the software update or patch notes and how it applies to the assigned stack.\",\n  \"affected_software\": \"None affected or insignificant software component\",\n  \"attack_type\": \"General Information / Patch Announcement\",\n  \"severity\": \"Low/None\",\n  \"dateFound\": \"The ISO timestamp string provided to you\"\n\"relevance_score\": Ensure you insert integer from 1 to 4. Choose 1-2 for standard regulatory or version updates; choose 4-5 for minor configuration adjustments or baseline performance improvements],\n  \"remediation_action\": \"Write a specific 1-sentence maintenance instruction, e.g., 'Schedule a standard maintenance window to apply point-release 7.0.6 during off-peak hours.'\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        112,
+        240
+      ],
+      "id": "1ffdd9ac-5e69-4eac-9abc-66c21f45d227",
+      "name": "SearchAgent-2"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {
+          "temperature": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        112,
+        416
+      ],
+      "id": "903a513f-3e1e-4011-abd1-eb183018369a",
+      "name": "Groq-OSS",
+      "credentials": {
+        "groqApi": {
+          "id": "L6JULHYCEWAoF1KI",
+          "name": "Groq account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {
+          "temperature": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -16
+      ],
+      "id": "ebf2f404-da05-42d6-b67d-2548f05c8ff4",
+      "name": "Groq-OSS1",
+      "credentials": {
+        "groqApi": {
+          "id": "L6JULHYCEWAoF1KI",
+          "name": "Groq account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appS1y7uyy2tbUToz",
+          "mode": "list",
+          "cachedResultName": "ThreatInt",
+          "cachedResultUrl": "https://airtable.com/appS1y7uyy2tbUToz"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblWSw7c1WjWnF3pK",
+          "mode": "list",
+          "cachedResultName": "data",
+          "cachedResultUrl": "https://airtable.com/appS1y7uyy2tbUToz/tblWSw7c1WjWnF3pK"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "CompanyName": "={{ $json.companyName }}",
+            "ThreatSummary": "={{ $json.threatSummary }}",
+            "TechStack": "={{ $json.techStack }}",
+            "Affected_Softwares": "={{ $json.affected_software }}",
+            "attack_type": "={{ $json.attack_type }}",
+            "Severity": "={{ $json.severity }}",
+            "remediation_action": "={{ $json.remediation_action }}",
+            "Date": "= {{ new Date().toISOString() }}",
+            "relevance_score": "={{ Number($json.relevance_score)}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "CompanyName",
+              "displayName": "CompanyName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ThreatSummary",
+              "displayName": "ThreatSummary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "TechStack",
+              "displayName": "TechStack",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Affected_Softwares",
+              "displayName": "Affected_Softwares",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "attack_type",
+              "displayName": "attack_type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "remediation_action",
+              "displayName": "remediation_action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "relevance_score",
+              "displayName": "relevance_score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": false
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        272
+      ],
+      "id": "c34d3916-f75b-4775-8eb4-af321e85d0d4",
+      "name": "Append Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9kzDn0SH4vhoDkFQ",
+          "name": "AirtableToken"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a2714639-c15e-4eb4-9c62-bc7c9abf1f9b",
+              "leftValue": "={{ $json.relevance_score }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        640,
+        16
+      ],
+      "id": "11297fc7-3be8-4854-b795-2879bc522e72",
+      "name": "Notify Senior Engineers"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "89bcb5d3-becc-481f-a237-d2ba1cc28c7a",
+              "leftValue": "={{ $json.relevance_score }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "d022e16b-0781-409d-b330-ad358fd9202f",
+              "leftValue": "={{ $json.relevance_score }}",
+              "rightValue": 7,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        800,
+        80
+      ],
+      "id": "2bed171f-248f-403f-a63c-c5fe4397d648",
+      "name": "Notify Junior Engineers"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B4DU77UR2",
+          "mode": "list",
+          "cachedResultName": "ai-intelligence-feed"
+        },
+        "text": "=\"CRITICAL ALERT FOR SENIOR ENGINEERS, ENTERPRISE TECHSTACK BREACHED: {{ $json.threatSummary }}\n------------------------------------------------------------------------------------------------\nACTIONS TO BE TAKEN: {{ $json.remediation_action}}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        800,
+        -176
+      ],
+      "id": "1d1987b9-2ec6-448c-8c78-f8ee433dcc18",
+      "name": "Notification Message",
+      "webhookId": "d0bbaec8-0574-4f3f-a204-d510914359a3",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "h9RDlgbZrLbxSnTs",
+          "name": "Slack OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B4DU77UR2",
+          "mode": "list",
+          "cachedResultName": "ai-intelligence-feed"
+        },
+        "text": "=\"ATTENTION JUNIOR ENGINEERS, A NEW VULNERABILITY HAS BEEN LOCATED: {{ $json.ThreatSummary }}\n------------------------------------------------------\nACTIONS TO BE TAKEN (IF RELEVANT TO TECHSTACK): {{ $json.remediation_action}}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        992,
+        64
+      ],
+      "id": "d92d0fb0-9188-46ce-be24-0dead7a2798b",
+      "name": "Notification Message1",
+      "webhookId": "d0bbaec8-0574-4f3f-a204-d510914359a3",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "h9RDlgbZrLbxSnTs",
+          "name": "Slack OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "Search-Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Date & Time1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Search-Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time1": {
+      "main": [
+        [
+          {
+            "node": "SearchAgent-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append Airtable",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Senior Engineers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI1": {
+      "ai_tool": [
+        [
+          {
+            "node": "SearchAgent-2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search-Agent1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SearchAgent-2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq-OSS": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SearchAgent-2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq-OSS1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Search-Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Airtable": {
+      "main": [
+        []
+      ]
+    },
+    "Notify Senior Engineers": {
+      "main": [
+        [
+          {
+            "node": "Notification Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Junior Engineers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Junior Engineers": {
+      "main": [
+        [
+          {
+            "node": "Notification Message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notification Message1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "fbfd49ee-0392-44ae-bcb5-839699ecdde6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a69ec37954977b88a479ebfa185a30fc778ae1a13872bdbe9e26e7b8edafd875"
+  },
+  "id": "oxYSnnOtrKjhhVn4",
+  "tags": []
+}
