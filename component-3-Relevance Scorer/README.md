@@ -1,11 +1,13 @@
-# [Relevance Scorer]
-**Owner:** [Shiva]
+# Relevance Scorer
+**Owner:** Shiva
+
 ## Description
-[Brief description of what this component does]
+Assigns a relevance score to each threat classification based on its impact and affected softwares to prioritize the most critical threats effectively
+
 ## Status
-- [ ] Design complete
-- [ ] Sample data prepared
-- [ ] Initial implementation
-- [ ] Testing
+- [x] Design complete
+- [x] Sample data prepared
+- [x] Initial implementation
+- [x] Testing
 - [ ] Integration with other components
 - [ ] Documentation complete
