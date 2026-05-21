@@ -7,7 +7,7 @@ Through integrating AI, this system enables faster identification and prioritiza
 This project aims to enhance threat intelligence by providing deeper insight and context, and clear, actionable insights in real time.
 
 ## Architecture
-![Architecture Diagram](https://github.com/Daniil5343/ai-capstone-threat-intelligence-feed/blob/1df6fb4006892e86f05aef83106cf1ad00f71cf3/docs/architecture.png)
+![Architecture Diagram](https://github.com/Daniil5343/ai-capstone-threat-intelligence-feed/blob/a217211565a5476428349a0145334198d4e46ea9/docs/architecture.png.png)
 
 ## Components
 - **Feed Collector**
