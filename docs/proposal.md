@@ -1,4 +1,4 @@
-# [Threat Intelligence Feed Dashboard]
+# Threat Intelligence Feed Dashboard
 
 ## Team Members
 
@@ -16,18 +16,18 @@ Security analysts at mid to large organizations who handle 200+ alerts daily and
 
 ## Architecture
 
-![Architecture Diagram](https://github.com/Daniil5343/ai-capstone-threat-intelligence-feed/blob/aa961938aad30891d5d1d5ae425f1900614d3f4a/docs/architecture.png)
+![Architecture Diagram](https://github.com/Daniil5343/ai-capstone-threat-intelligence-feed/blob/a217211565a5476428349a0145334198d4e46ea9/docs/architecture.png.png)
 
 
 
 ## Component Breakdown
 
 ### Component 1: Feed Collector (Daniel)
-- **Description:** [Calls on Groq API  and SerpAPI, Groq agent (llama model) uses SerpAPI to perform a google search and returns relevant data related to malicious activity in terms of security. Can be adjusted to search independently.]
-- **Tools:** [n8n, Airtable, Hugging Face, SerpAPI, GroqAPI]
-- **Input:** [GoogleSearches]
-- **Output:** [Formatted JSON]
-- **Standalone demo:** [The AI will perform a search and return relevant data re-formatted to JSON]
+- **Description:** Calls on Groq API  and SerpAPI, Groq agent (llama model) uses SerpAPI to perform a google search and returns relevant data related to malicious activity in terms of security. Can be adjusted to search independently.
+- **Tools:** n8n, Airtable, Hugging Face, SerpAPI, GroqAPI
+- **Input:** GoogleSearches
+- **Output:** Formatted JSON
+- **Standalone demo:** The AI will perform a search and return relevant data re-formatted to JSON
 
 ### Component 2: AI Summarizer & IOC Extractor (Allison)
 - **Description:** Summarize threats and Examine Indicators or compromise
@@ -52,8 +52,8 @@ Security analysts at mid to large organizations who handle 200+ alerts daily and
 
 ## Data Sources 
 
-- **Primary data:** Web-scraped data? Intelligence websites ?
-- **Sample data:** Will find Data that would seem to be malicious in nature or 
+- **Primary data:** Web-scraped data
+- **Sample data:** Will find Data that would seem to be malicious in nature
 - **Data format:** JSON
 
 
@@ -61,8 +61,7 @@ Security analysts at mid to large organizations who handle 200+ alerts daily and
 
 |      Capability     |           Purpose          |                                    Model/API                                   |
 |---------------------|----------------------------|--------------------------------------------------------------------------------|
-| Text Classification | Detect suspicious language | https://huggingface.co/cybersectony/phishing-email-detection-distilbert_v2.4.1 |
-| Text Classification |     Enriches the threat    |      https://huggingface.co/mrm8488/bert-tiny-finetuned-sms-spam-detection     |
+| Text Classification | Threat Detection & Summarization | https://console.groq.com |
 
 
 ## Success Criteria 
