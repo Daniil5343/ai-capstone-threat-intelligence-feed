@@ -1,0 +1,547 @@
+{
+  "name": "Relevance Scorer Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -416
+      ],
+      "id": "7bf01a60-bc0d-44a5-b0d4-89c357263fa0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appYJtj2koS1EagOx",
+          "mode": "list",
+          "cachedResultName": "Relevance Scorer Airtable",
+          "cachedResultUrl": "https://airtable.com/appYJtj2koS1EagOx"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblXnISq5L15EmRxN",
+          "mode": "list",
+          "cachedResultName": "Sample data",
+          "cachedResultUrl": "https://airtable.com/appYJtj2koS1EagOx/tblXnISq5L15EmRxN"
+        },
+        "filterByFormula": "{input_text} != \"\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        352,
+        -416
+      ],
+      "id": "be4925e0-b91b-4265-9d90-37eb41f55987",
+      "name": "Threat Article Summary",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "yCGFJaCXnjnXIRML",
+          "name": "Airtable Personal Access Token account 15"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.1-8b-instant\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a senior Security Operations Center (SOC) analyst. Respond ONLY with a JSON object. \\n\\nFields to include:\\n1. 'relevance_score': A float (1.0 to 10.0) based on how directly the threat affects the provided tech_stack (TECH STACK list: JavaScript, Node.js, Electron, PostgreSQL, Redis, Docker containers, Apache HTTP Server, Ubuntu Linux, OpenSSL, Kubernetes clusters, Terraform infrastructure, AWS IAM, Nginx web servers, Python applications, GitHub Actions CI/CD, Active Directory, Windows Server 2022, IIS, MongoDB databases, Express.js apps, React frameworks, Cisco IOS XE routers, BGP routing infrastructure, Fortinet firewalls).\\n3. 'severity': A single word string (High, Medium, or Low) representing the global danger of the vulnerability.\\n4. 'reasoning': 1 sentence explanation justifying the relevance_score and severity assigned.\\n5. 'matched_tech': An array of strings containing ONLY the specific technologies from the TECH STACK list used to determine the relevance_score. If no matches, return an empty array [].\\n\\nCRITICAL LOGIC:\\n- If the input is nonsensical or noise, set relevance_score to 1.0, severity to 'Low', and summary to 'Noise detected.'\\n- Ahigh 'severity' does not always mean a high 'relevance_score' if the tech_stack does not match.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify(\"THREAT ARTICLE: \" + $json.fields.input_text + \" | TECH STACK: \" + $json.fields.tech_stack) }}\n    }\n  ],\n  \"response_format\": { \"type\": \"json_object\" }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        560,
+        -416
+      ],
+      "id": "c5d33544-3751-4c1b-93a8-e7aaf5f37e69",
+      "name": "Groq: Classification",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5rnvb5KcEFgQqLvD",
+          "name": "GroqHeader"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9589a1e-aaef-4972-bfa7-d4b1b7f15e86",
+              "name": "classification",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        -304
+      ],
+      "id": "f1456026-a079-4927-81e5-103b567627c2",
+      "name": "Record Error"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "02586a49-0fd5-45ac-8a2f-ce3fa9661ef4",
+              "name": "classification",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        -512
+      ],
+      "id": "4d6bdccb-89d4-49f5-9fa8-f8bc854e3887",
+      "name": "Record Results"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appYJtj2koS1EagOx",
+          "mode": "list",
+          "cachedResultName": "Relevance Scorer Airtable",
+          "cachedResultUrl": "https://airtable.com/appYJtj2koS1EagOx"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblXnISq5L15EmRxN",
+          "mode": "list",
+          "cachedResultName": "Sample data",
+          "cachedResultUrl": "https://airtable.com/appYJtj2koS1EagOx/tblXnISq5L15EmRxN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Processed Status": true,
+            "relevance score": "={{ JSON.parse($json.classification).relevance_score }}",
+            "notes": "={{ JSON.parse($json.classification).reasoning }}",
+            "tested at": "={{ new Date().toISOString() }}",
+            "id": "={{ $('Threat Article Summary').item.json.id }}",
+            "severity": "={{ JSON.parse($json.classification).severity }}",
+            "tech_stack": "={{ JSON.parse($json.classification).matched_tech.join(\", \") }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "input_text",
+              "displayName": "input_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "alert",
+              "displayName": "alert",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "severity",
+              "displayName": "severity",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "relevance score",
+              "displayName": "relevance score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tech_stack",
+              "displayName": "tech_stack",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tested at",
+              "displayName": "tested at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Processed Status",
+              "displayName": "Processed Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        -512
+      ],
+      "id": "abbdddf0-3004-4ec5-83e1-c0a7d97ecdb2",
+      "name": "Update Results",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "yCGFJaCXnjnXIRML",
+          "name": "Airtable Personal Access Token account 15"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appYJtj2koS1EagOx",
+          "mode": "list",
+          "cachedResultName": "Relevance Scorer Airtable",
+          "cachedResultUrl": "https://airtable.com/appYJtj2koS1EagOx"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblXnISq5L15EmRxN",
+          "mode": "list",
+          "cachedResultName": "Sample data",
+          "cachedResultUrl": "https://airtable.com/appYJtj2koS1EagOx/tblXnISq5L15EmRxN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Processed Status": true,
+            "relevance score": "={{ JSON.parse($json.classification).relevance_score }}",
+            "notes": "={{ JSON.parse($json.classification).reasoning }}",
+            "tested at": "={{ new Date().toISOString() }}",
+            "id": "={{ $('Threat Article Summary').item.json.id }}",
+            "severity": "={{ JSON.parse($json.classification).severity }}",
+            "tech_stack": "={{ JSON.parse($json.classification).matched_tech.join(\", \") }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "input_text",
+              "displayName": "input_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "alert",
+              "displayName": "alert",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "severity",
+              "displayName": "severity",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "relevance score",
+              "displayName": "relevance score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tech_stack",
+              "displayName": "tech_stack",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tested at",
+              "displayName": "tested at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Processed Status",
+              "displayName": "Processed Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        -304
+      ],
+      "id": "152f5889-df4a-4ff6-8b30-ba125b1bfe3f",
+      "name": "Update Error",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "yCGFJaCXnjnXIRML",
+          "name": "Airtable Personal Access Token account 15"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "66c7cb50-1f1d-466c-9756-adf086d2581d",
+              "leftValue": "={{ JSON.parse($json.choices[0].message.content).relevance_score }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        800,
+        -416
+      ],
+      "id": "3b57fe57-84ce-454a-99bf-bdf7e3aeaf9b",
+      "name": "True - Results Path / False - Error Path"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Threat Article Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Threat Article Summary": {
+      "main": [
+        [
+          {
+            "node": "Groq: Classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq: Classification": {
+      "main": [
+        [
+          {
+            "node": "True - Results Path / False - Error Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record Results": {
+      "main": [
+        [
+          {
+            "node": "Update Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record Error": {
+      "main": [
+        [
+          {
+            "node": "Update Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "True - Results Path / False - Error Path": {
+      "main": [
+        [
+          {
+            "node": "Record Results",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "105b4451-79eb-4a7a-b1c0-afbf4b8ea0fd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a69ec37954977b88a479ebfa185a30fc778ae1a13872bdbe9e26e7b8edafd875"
+  },
+  "id": "PUNaXJcINFov0XHb",
+  "tags": []
+}
