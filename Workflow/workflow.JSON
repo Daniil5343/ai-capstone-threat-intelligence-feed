@@ -386,17 +386,8 @@
           },
           "conditions": [
             {
-              "id": "017a0163-ec6e-4c79-bb55-822adfd041b1",
-              "leftValue": "={{ $('Code').item.json.companyName.length % 2 }}",
-              "rightValue": 0,
-              "operator": {
-                "type": "number",
-                "operation": "gt"
-              }
-            },
-            {
               "id": "b891d9b0-005f-4d3b-9a36-f894d9f21d91",
-              "leftValue": "{{ $json.threatSummary }}",
+              "leftValue": "={{ $json.threatSummary }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -417,160 +408,6 @@
       ],
       "id": "44111992-4824-46af-b219-d4a1fd5f4d1a",
       "name": "If1"
-    },
-    {
-      "parameters": {
-        "operation": "create",
-        "base": {
-          "__rl": true,
-          "value": "appS1y7uyy2tbUToz",
-          "mode": "list",
-          "cachedResultName": "ThreatInt",
-          "cachedResultUrl": "https://airtable.com/appS1y7uyy2tbUToz"
-        },
-        "table": {
-          "__rl": true,
-          "value": "tblWSw7c1WjWnF3pK",
-          "mode": "list",
-          "cachedResultName": "data",
-          "cachedResultUrl": "https://airtable.com/appS1y7uyy2tbUToz/tblWSw7c1WjWnF3pK"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "CompanyName": "={{ $json.companyName }}",
-            "ThreatSummary": "={{ $json.threatSummary }}",
-            "TechStack": "={{ $json.techStack }}",
-            "Affected_Softwares": "={{ $json.affected_software }}",
-            "attack_type": "={{ $json.attack_type }}",
-            "Severity": "={{ $json.severity }}",
-            "remediation_action": "={{ $json.remediation_action }}",
-            "Date": "= {{ new Date().toISOString() }}",
-            "relevance_score": "={{ Number($json.relevance_score)}}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "CompanyName",
-              "displayName": "CompanyName",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "ThreatSummary",
-              "displayName": "ThreatSummary",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "TechStack",
-              "displayName": "TechStack",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Affected_Softwares",
-              "displayName": "Affected_Softwares",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "attack_type",
-              "displayName": "attack_type",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Severity",
-              "displayName": "Severity",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "remediation_action",
-              "displayName": "remediation_action",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "relevance_score",
-              "displayName": "relevance_score",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "number",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Date",
-              "displayName": "Date",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "dateTime",
-              "readOnly": false,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {
-          "typecast": false
-        }
-      },
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2.2,
-      "position": [
-        864,
-        256
-      ],
-      "id": "c34d3916-f75b-4775-8eb4-af321e85d0d4",
-      "name": "Update Records",
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "9kzDn0SH4vhoDkFQ",
-          "name": "AirtableToken"
-        }
-      }
     },
     {
       "parameters": {
@@ -721,6 +558,172 @@
       ],
       "id": "f25e8760-8307-484f-baab-ea63db729249",
       "name": "Record Error",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9kzDn0SH4vhoDkFQ",
+          "name": "AirtableToken"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appS1y7uyy2tbUToz",
+          "mode": "list",
+          "cachedResultName": "ThreatInt",
+          "cachedResultUrl": "https://airtable.com/appS1y7uyy2tbUToz"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblWSw7c1WjWnF3pK",
+          "mode": "list",
+          "cachedResultName": "data",
+          "cachedResultUrl": "https://airtable.com/appS1y7uyy2tbUToz/tblWSw7c1WjWnF3pK"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "CompanyName": "={{ $json.companyName }}",
+            "ThreatSummary": "={{ $json.threatSummary }}",
+            "TechStack": "={{ $json.techStack }}",
+            "Affected_Softwares": "={{ $json.affected_software }}",
+            "attack_type": "={{ $json.attack_type }}",
+            "Severity": "={{ $json.severity }}",
+            "remediation_action": "={{ $json.remediation_action }}",
+            "Date": "= {{ new Date().toISOString() }}",
+            "relevance_score": "={{ Number($json.relevance_score)}}",
+            "Execution Errors": "=\"PIPELINE SUCCESS: ZERO FAILURE\""
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "CompanyName",
+              "displayName": "CompanyName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "TechStack",
+              "displayName": "TechStack",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ThreatSummary",
+              "displayName": "ThreatSummary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Affected_Softwares",
+              "displayName": "Affected_Softwares",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "attack_type",
+              "displayName": "attack_type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "remediation_action",
+              "displayName": "remediation_action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "relevance_score",
+              "displayName": "relevance_score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Execution Errors",
+              "displayName": "Execution Errors",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": false
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        256
+      ],
+      "id": "fe1e6aae-5d1e-42bd-88de-1e2e97eeac1b",
+      "name": "Update Records1",
       "credentials": {
         "airtableTokenApi": {
           "id": "9kzDn0SH4vhoDkFQ",
@@ -913,7 +916,7 @@
       "main": [
         [
           {
-            "node": "Update Records",
+            "node": "Update Records1",
             "type": "main",
             "index": 0
           }
@@ -926,11 +929,6 @@
           }
         ]
       ]
-    },
-    "Update Records": {
-      "main": [
-        []
-      ]
     }
   },
   "active": true,
@@ -941,7 +939,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "41a0b409-0c90-4501-abf9-f21b2c5b83b1",
+  "versionId": "1383432d-efd3-4ac2-a27b-da397c3fc9f5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a69ec37954977b88a479ebfa185a30fc778ae1a13872bdbe9e26e7b8edafd875"
