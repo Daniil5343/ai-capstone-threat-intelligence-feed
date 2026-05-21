@@ -9,7 +9,7 @@
 ## Architecture
 - **Parameters/Ingestion:** User sets parameters/keywords/filters to be searched for.
 - **Ingestion:** Groq-LLM agent calls upon SerpAPI to return recently found cybersecurity oriented vulnerabilities based around user given parameters (or default if unchanged)
-- **AI Core:** Groq-LLM summarizes the threat by highlighting the affected software and the matched tech stack. It assigns a severity label (High/Medium, Low), relevance score (1.0-10.0) and proposes a remediate action. 
+- **AI Core:** Groq-LLM summarizes the threat by highlighting the affected software and the matched tech stack. It assigns a severity label (High/Medium, Low), relevance score (1.0-10.0) and proposes an immediate action. 
 - **Specialist:** n8n workflow notifies Senior Engineers for a high-confidence threat (confidence >= 8) and Junior Engineers for a low-confidence threat (confidence >= 4 but <= 7).
 - **Integration:** Results Dashboard, Error Dashboard
 
