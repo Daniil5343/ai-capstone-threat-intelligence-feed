@@ -9,5 +9,5 @@ Assigns a relevance score to each threat classification based on its impact and 
 - [x] Sample data prepared
 - [x] Initial implementation
 - [x] Testing
-- [ ] Integration with other components
-- [ ] Documentation complete
+- [x] Integration with other components
+- [x] Documentation complete
