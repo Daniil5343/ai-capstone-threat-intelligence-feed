@@ -35,7 +35,7 @@
 | Date | Date | Auto | Updates as the threat is proccessed | 
 
 ## Conventions
-- Field names: Camel_Case (no spaces instead underscores, capitals)
+- Field names: camelCase (no spaces instead one string, capital for first word)
 - Status values: lowercase, consistent across tables
 - Date fields: date (YYYY-MM-DD)  time (24 hr format)
 
