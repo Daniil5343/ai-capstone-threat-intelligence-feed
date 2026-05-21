@@ -1,11 +1,11 @@
-# [AI Summarizer & IOC Extractor]
-**Owner:** [Allison]
+# AI Summarizer & IOC Extractor
+**Owner:** Allison
 ## Description
-[Brief description of what this component does]
+Summarize the threats via Groq LLM and pulls out the IOCs and tech stack
 ## Status
-- [ ] Design complete
-- [ ] Sample data prepared
-- [ ] Initial implementation
-- [ ] Testing
-- [ ] Integration with other components
-- [ ] Documentation complete
+- [x] Design complete
+- [x] Sample data prepared
+- [x] Initial implementation
+- [x] Testing
+- [x] Integration with other components
+- [x] Documentation complete
