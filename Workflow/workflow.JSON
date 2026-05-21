@@ -593,8 +593,7 @@
             "Severity": "={{ $json.severity }}",
             "remediation_action": "={{ $json.remediation_action }}",
             "Date": "= {{ new Date().toISOString() }}",
-            "relevance_score": "={{ Number($json.relevance_score)}}",
-            "Execution Errors": "=\"PIPELINE SUCCESS: ZERO FAILURE\""
+            "relevance_score": "={{ Number($json.relevance_score)}}"
           },
           "matchingColumns": [],
           "schema": [
@@ -706,7 +705,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -939,7 +938,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "1383432d-efd3-4ac2-a27b-da397c3fc9f5",
+  "versionId": "67bc40b2-53c5-463b-af8c-43d4977f8d90",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a69ec37954977b88a479ebfa185a30fc778ae1a13872bdbe9e26e7b8edafd875"
