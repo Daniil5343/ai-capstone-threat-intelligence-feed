@@ -16,7 +16,7 @@ This project aims to enhance threat intelligence by providing deeper insight and
 - **Integration, Testing & Presentation**
 
   
-### [REQUIREMENTS] to run: [n8n account](https://n8n.io), [Groq Account/Credentials](https://Groq.com), [AirTable account/credentials](https://airtable.com), [SerpAPI](SerpAPI.com),[(optional) Slack Account](https://Slack.com)
+### [REQUIREMENTS] to run: [n8n account](https://n8n.io), [Groq Account/Credentials](https://Groq.com), [AirTable account/credentials](https://airtable.com), [SerpAPI credentials](SerpAPI.com),[(optional) Slack Account](https://Slack.com)
 
 ## How to Run
 1. Go to the [Workflow directory](https://github.com/Daniil5343/ai-capstone-threat-intelligence-feed/tree/main/Workflow) and download the given JSON file
